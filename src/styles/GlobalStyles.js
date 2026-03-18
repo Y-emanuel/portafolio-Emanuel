@@ -1,4 +1,4 @@
-    import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 import { theme } from './theme';
 
 export const GlobalStyles = createGlobalStyle`
@@ -13,6 +13,9 @@ export const GlobalStyles = createGlobalStyle`
     font-size: 16px;
     overflow-x: hidden;
     width: 100%;
+    
+    /* ✅ CLAVE: Evita que el navbar tape el contenido al hacer scroll */
+    scroll-padding-top: 100px;
   }
 
   body {
@@ -30,11 +33,21 @@ export const GlobalStyles = createGlobalStyle`
     background-attachment: fixed;
   }
 
+  /* ✅ CLAVE: Evita que el navbar tape las secciones */
+  section[id] {
+    scroll-margin-top: 100px;
+  }
+  
+  @media (max-width: 768px) {
+    section[id] {
+      scroll-margin-top: 90px;
+    }
+  }
+
   /* ✅ Contención de texto global para responsive */
   h1, h2, h3, h4, h5, h6, p, span, div, li {
     overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
+    word-wrap: break-word;    word-break: break-word;
   }
 
   /* ✅ Imágenes y medios responsivos */
@@ -47,7 +60,8 @@ export const GlobalStyles = createGlobalStyle`
   /* ✅ Inputs y textareas */
   input, textarea, select, button {
     max-width: 100%;
-    width: 100%;  }
+    width: 100%;
+  }
 
   /* Scrollbar personalizado */
   ::-webkit-scrollbar {
@@ -82,8 +96,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   /* Efecto glow para elementos interactivos */
-  .glow-hover:hover {
-    box-shadow: ${theme.shadows.hover};
+  .glow-hover:hover {    box-shadow: ${theme.shadows.hover};
     transform: translateY(-2px);
   }
 
@@ -96,7 +109,8 @@ export const GlobalStyles = createGlobalStyle`
     color: ${theme.colors.primary};
   }
 
-  button {    cursor: pointer;
+  button {
+    cursor: pointer;
     font-family: inherit;
   }
 `;
