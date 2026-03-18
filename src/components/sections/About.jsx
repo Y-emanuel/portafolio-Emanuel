@@ -7,12 +7,19 @@ import { SectionTitle } from '../ui/SectionTitle';
 const Section = styled.section`
   padding: 6rem 2rem;
   max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;  /* ✅ Asegurar que no se desborde */
+  margin: 4rem auto;
   background: rgba(15, 23, 42, 0.5);
   border-radius: 20px;
-  margin: 4rem auto;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(139, 92, 246, 0.2);
+  overflow-x: hidden;  /* ✅ Evitar scroll horizontal en móvil */
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    margin: 2rem 1rem;  /* ✅ Menos margen en móvil */
+    padding: 4rem 1.5rem;
+    border-radius: 16px;
+  }
 `;
 
 const Content = styled.div`
@@ -20,10 +27,12 @@ const Content = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
   align-items: center;
+  width: 100%;  /* ✅ Asegurar que no se desborde */
   
   @media (max-width: ${theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
     text-align: center;
+    gap: 2rem;  /* ✅ Menos gap en móvil */
   }
 `;
 
@@ -34,11 +43,15 @@ const InfoCard = styled(motion.div)`
   padding: 2rem;
   backdrop-filter: blur(10px);
   transition: ${theme.transitions.smooth};
+  width: 100%;  /* ✅ Asegurar que no se desborde */
   
   &:hover {
     border-color: ${theme.colors.primary};
-    box-shadow: ${theme.shadows.futuristic};
-    transform: translateY(-4px);
+    box-shadow: ${theme.shadows.futuristic};    transform: translateY(-4px);
+  }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 1.5rem;  /* ✅ Menos padding en móvil */
   }
 `;
 
@@ -52,6 +65,7 @@ const InfoItem = styled.div`
   border-radius: 12px;
   border-left: 3px solid ${theme.colors.primary};
   transition: ${theme.transitions.fast};
+  width: 100%;  /* ✅ Asegurar que no se desborde */
   
   &:hover {
     background: rgba(139, 92, 246, 0.2);
@@ -78,12 +92,17 @@ const InfoItem = styled.div`
     font-size: 1rem;
     font-weight: 600;
     color: ${theme.colors.text};
+    word-break: break-word;  /* ✅ Evitar desbordamiento de texto largo */
+  }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 0.75rem;    gap: 0.75rem;
   }
 `;
 
 const Description = styled.div`
   h3 {
-    font-size: 1.75rem;
+    font-size: clamp(1.5rem, 5vw, 1.75rem);  /* ✅ Texto responsive */
     margin-bottom: 1.5rem;
     color: ${theme.colors.text};
     
@@ -93,7 +112,7 @@ const Description = styled.div`
   }
   
   p {
-    font-size: 1.1rem;
+    font-size: clamp(1rem, 3.5vw, 1.1rem);  /* ✅ Texto responsive */
     line-height: 1.8;
     color: ${theme.colors.textMuted};
     margin-bottom: 1.5rem;
@@ -107,9 +126,14 @@ const Description = styled.div`
 
 const SoftSkillsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));  /* ✅ Más flexible en móvil */
   gap: 1rem;
   margin-top: 2rem;
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    grid-template-columns: repeat(2, 1fr);  /* ✅ 2 columnas fijas en móvil muy pequeño */
+    gap: 0.75rem;
+  }
 `;
 
 const SoftSkillBadge = styled(motion.div)`
@@ -118,10 +142,10 @@ const SoftSkillBadge = styled(motion.div)`
   border: 1px solid rgba(34, 211, 238, 0.4);
   border-radius: 30px;
   text-align: center;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 3vw, 0.9rem);  /* ✅ Texto responsive */
   color: ${theme.colors.accent};
   font-weight: 500;
-  transition: ${theme.transitions.fast};
+  transition: ${theme.transitions.fast};  white-space: nowrap;  /* ✅ Evitar que el texto se parta */
   
   &:hover {
     background: ${theme.colors.accent};
@@ -170,8 +194,7 @@ const About = () => {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
         >
-          <Description>
-            <motion.h3 variants={itemVariants}>
+          <Description>            <motion.h3 variants={itemVariants}>
               Hola, soy <span>{personalInfo.name}</span> 👋
             </motion.h3>
             
@@ -183,7 +206,7 @@ const About = () => {
             </motion.p>
             
             <motion.p variants={itemVariants}>
-              Actualmente me estoy formando como <span className="highlight">Full Stack Developer </span> 
+              Actualmente me estoy formando como <span className="highlight">Full Stack Developer</span> 
               en CodeHouse, donde estoy profundizando en tecnologías como React, Node.js, y bases de datos. 
               Mi objetivo es crear experiencias web que combinen diseño elegante con funcionalidad robusta.
             </motion.p>
@@ -196,7 +219,9 @@ const About = () => {
           
           {/* Soft Skills */}
           <motion.div variants={itemVariants}>
-            <h4 style={{ marginBottom: '1rem', color: theme.colors.text }}>Habilidades Blandas</h4>
+            <h4 style={{ marginBottom: '1rem', color: theme.colors.text, fontSize: 'clamp(1rem, 4vw, 1.1rem)' }}>
+              Habilidades Blandas
+            </h4>
             <SoftSkillsGrid>
               {softSkills.map((skill, index) => (
                 <SoftSkillBadge
@@ -218,13 +243,11 @@ const About = () => {
         <InfoCard
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          viewport={{ once: true }}          transition={{ duration: 0.6, delay: 0.3 }}
           whileHover={{ y: -4 }}
         >
-          <h3 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>Información Personal</h3>
+          <h3 style={{ marginBottom: '1.5rem', fontSize: 'clamp(1.2rem, 4vw, 1.5rem)' }}>Información Personal</h3>
           
-          {/* ✅ CAMBIO: InfoItem sin variants (no necesita animación) */}
           <InfoItem>
             <span className="icon">👤</span>
             <div>
@@ -269,5 +292,4 @@ const About = () => {
     </Section>
   );
 };
-
 export default About;
