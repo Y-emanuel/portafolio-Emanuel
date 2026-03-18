@@ -16,9 +16,7 @@ const NAV_ITEMS = [
 
 const NAVBAR_HEIGHT = 80;
 
-/* =========================
-   STYLES
-========================= */
+/* ================= STYLES ================= */
 
 const NavbarContainer = styled.nav`
   position: fixed;
@@ -34,11 +32,6 @@ const NavbarContainer = styled.nav`
   &.scrolled {
     background: rgba(15, 23, 42, 0.95);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-  }
-
-  &.hidden {
-    opacity: 0;
-    pointer-events: none;
   }
 `;
 
@@ -95,7 +88,6 @@ const NavLink = styled(motion.a)`
   }
 `;
 
-/* Botón base reutilizable */
 const BaseMobileButton = styled.button`
   width: 48px;
   height: 48px;
@@ -118,7 +110,6 @@ const BaseMobileButton = styled.button`
 
 const MobileMenuButton = styled(BaseMobileButton)`
   display: none;
-  z-index: 1001;
 
   @media (max-width: ${theme.breakpoints.tablet}) {
     display: flex;
@@ -134,7 +125,7 @@ const CloseButton = styled(BaseMobileButton)`
 const MobileMenuOverlay = styled(motion.div)`
   position: fixed;
   inset: 0;
-  z-index: 1100;
+  z-index: 2000; /* Más alto que cualquier cosa */
   background: rgba(15, 23, 42, 0.98);
   backdrop-filter: blur(20px);
 
@@ -173,21 +164,17 @@ const ScrollToTopButton = styled(motion.button)`
   z-index: 1000;
 `;
 
-/* =========================
-   COMPONENT
-========================= */
+/* ================= COMPONENT ================= */
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  /* Compensar navbar fijo */
   useEffect(() => {
     document.body.style.paddingTop = `${NAVBAR_HEIGHT}px`;
   }, []);
 
-  /* Bloquear scroll cuando menú abierto */
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? 'hidden' : 'auto';
   }, [isMobileMenuOpen]);
@@ -222,44 +209,42 @@ const Navbar = () => {
 
   return (
     <>
-      <NavbarContainer
-        className={`${isScrolled ? 'scrolled' : ''} ${
-          isMobileMenuOpen ? 'hidden' : ''
-        }`}
-      >
-        <NavbarContent>
-          <Logo
-            href="#hero"
-            onClick={(e) => {
-              e.preventDefault();
-              setIsMobileMenuOpen(false);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          >
-            <FiCode className="icon" />
-            <span>{personalInfo.name.split(' ')[0]}</span>
-          </Logo>
+      {/* 🔥 El navbar NO se renderiza si el menú está abierto */}
+      {!isMobileMenuOpen && (
+        <NavbarContainer className={isScrolled ? 'scrolled' : ''}>
+          <NavbarContent>
+            <Logo
+              href="#hero"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            >
+              <FiCode className="icon" />
+              <span>{personalInfo.name.split(' ')[0]}</span>
+            </Logo>
 
-          <NavLinks>
-            {NAV_ITEMS.map((item) => (
-              <NavLink
-                key={item.name}
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
-              >
-                {item.name}
-              </NavLink>
-            ))}
-          </NavLinks>
+            <NavLinks>
+              {NAV_ITEMS.map((item) => (
+                <NavLink
+                  key={item.name}
+                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
+                >
+                  {item.name}
+                </NavLink>
+              ))}
+            </NavLinks>
 
-          <MobileMenuButton
-            onClick={() => setIsMobileMenuOpen(true)}
-            type="button"
-          >
-            <FiMenu />
-          </MobileMenuButton>
-        </NavbarContent>
-      </NavbarContainer>
+            <MobileMenuButton
+              onClick={() => setIsMobileMenuOpen(true)}
+              type="button"
+            >
+              <FiMenu />
+            </MobileMenuButton>
+          </NavbarContent>
+        </NavbarContainer>
+      )}
 
       <AnimatePresence>
         {isMobileMenuOpen && (
