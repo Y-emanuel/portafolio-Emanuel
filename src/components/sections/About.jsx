@@ -5,7 +5,7 @@ import { personalInfo } from '../../data/personalInfo';
 import { SectionTitle } from '../ui/SectionTitle';
 
 const Section = styled.section`
-  padding: 6rem 2rem;
+  padding: 6rem 1.5rem;
   max-width: 1200px;
   width: 100%;
   margin: 4rem auto;
@@ -16,8 +16,8 @@ const Section = styled.section`
   overflow-x: hidden;
   
   @media (max-width: ${theme.breakpoints.mobile}) {
-    margin: 2rem 1rem;
-    padding: 4rem 1.5rem;
+    margin: 2rem 0.5rem;
+    padding: 3rem 1rem;
     border-radius: 16px;
   }
 `;
@@ -44,14 +44,15 @@ const InfoCard = styled(motion.div)`
   backdrop-filter: blur(10px);
   transition: ${theme.transitions.smooth};
   width: 100%;
+  overflow: hidden;
   
   &:hover {
-    border-color: ${theme.colors.primary};
-    box-shadow: ${theme.shadows.futuristic};    transform: translateY(-4px);
+    border-color: ${theme.colors.primary};    box-shadow: ${theme.shadows.futuristic};
+    transform: translateY(-4px);
   }
   
   @media (max-width: ${theme.breakpoints.mobile}) {
-    padding: 1.5rem;
+    padding: 1.5rem 1rem;
   }
 `;
 
@@ -66,6 +67,7 @@ const InfoItem = styled.div`
   border-left: 3px solid ${theme.colors.primary};
   transition: ${theme.transitions.fast};
   width: 100%;
+  overflow: hidden;
   
   &:hover {
     background: rgba(139, 92, 246, 0.2);
@@ -94,20 +96,24 @@ const InfoItem = styled.div`
     color: ${theme.colors.text};
     word-break: break-word;
     overflow-wrap: break-word;
-  }
+    max-width: 100%;  }
   
-  @media (max-width: ${theme.breakpoints.mobile}) {    padding: 0.75rem;
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 0.75rem;
     gap: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
   }
 `;
 
 const Description = styled.div`
   h3 {
-    font-size: clamp(1.5rem, 5vw, 1.75rem);
+    font-size: clamp(1.3rem, 5vw, 1.75rem);
     margin-bottom: 1.5rem;
     color: ${theme.colors.text};
     word-break: break-word;
     overflow-wrap: break-word;
+    line-height: 1.3;
     
     span {
       color: ${theme.colors.primary};
@@ -116,7 +122,7 @@ const Description = styled.div`
   }
   
   p {
-    font-size: clamp(1rem, 3.5vw, 1.1rem);
+    font-size: clamp(0.95rem, 3.5vw, 1.1rem);
     line-height: 1.8;
     color: ${theme.colors.textMuted};
     margin-bottom: 1.5rem;
@@ -136,32 +142,45 @@ const Description = styled.div`
 
 const SoftSkillsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
   margin-top: 2rem;
-  
+  width: 100%;  
   @media (max-width: ${theme.breakpoints.mobile}) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    max-width: 100%;
   }
 `;
+
 const SoftSkillBadge = styled(motion.div)`
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1rem;
   background: rgba(34, 211, 238, 0.1);
   border: 1px solid rgba(34, 211, 238, 0.4);
   border-radius: 30px;
   text-align: center;
-  font-size: clamp(0.8rem, 3vw, 0.9rem);
+  font-size: clamp(0.8rem, 2.5vw, 0.9rem);
   color: ${theme.colors.accent};
   font-weight: 500;
   transition: ${theme.transitions.fast};
-  white-space: nowrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  white-space: normal;
+  line-height: 1.3;
+  min-height: fit-content;
   
   &:hover {
     background: ${theme.colors.accent};
     color: ${theme.colors.secondary};
     transform: translateY(-3px);
     box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+  }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 20px;
   }
 `;
 
@@ -175,8 +194,7 @@ const About = () => {
     },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
+  const itemVariants = {    hidden: { opacity: 0, x: -20 },
     visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
   };
 
@@ -194,7 +212,8 @@ const About = () => {
       <SectionTitle 
         title="Sobre Mí" 
         subtitle="Conocé más sobre mi perfil profesional"
-      />      
+      />
+      
       <Content>
         {/* Columna Izquierda - Descripción */}
         <motion.div
@@ -224,8 +243,7 @@ const About = () => {
             <motion.p variants={itemVariants}>
               Siempre estoy buscando nuevos desafíos que me permitan crecer profesionalmente y 
               aportar valor a través de código limpio, optimizado y escalable.
-            </motion.p>
-          </Description>
+            </motion.p>          </Description>
           
           {/* Soft Skills */}
           <motion.div variants={itemVariants}>
@@ -240,10 +258,11 @@ const About = () => {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.02 }}
                 >
                   {skill}
-                </SoftSkillBadge>              ))}
+                </SoftSkillBadge>
+              ))}
             </SoftSkillsGrid>
           </motion.div>
         </motion.div>
@@ -273,8 +292,7 @@ const About = () => {
               <span className="value">{personalInfo.age} años</span>
             </div>
           </InfoItem>
-          
-          <InfoItem>
+                    <InfoItem>
             <span className="icon">📧</span>
             <div>
               <span className="label">Email</span>
@@ -292,7 +310,8 @@ const About = () => {
           
           <InfoItem>
             <span className="icon">📍</span>
-            <div>              <span className="label">Ubicación</span>
+            <div>
+              <span className="label">Ubicación</span>
               <span className="value">{personalInfo.location}</span>
             </div>
           </InfoItem>
