@@ -16,7 +16,6 @@ const NAV_ITEMS = [
 
 const NAVBAR_HEIGHT = 80;
 
-// ✅ Navbar Container
 const NavbarContainer = styled.nav`
   position: fixed;
   top: 0;
@@ -46,10 +45,9 @@ const NavbarContent = styled.div`
   height: 100%;
 `;
 
-// ✅ Logo
-const Logo = styled(motion.a)`  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+const Logo = styled(motion.a)`
+  display: flex;
+  align-items: center;  gap: 0.5rem;
   text-decoration: none;
   font-weight: 700;
   font-size: 1.25rem;
@@ -69,7 +67,6 @@ const Logo = styled(motion.a)`  display: flex;
   }
 `;
 
-// ✅ Nav Links Desktop
 const NavLinks = styled.div`
   display: flex;
   align-items: center;
@@ -96,11 +93,10 @@ const NavLink = styled(motion.a)`
   }
 `;
 
-// ✅ Botón Hamburguesa (Móvil)const MobileMenuButton = styled.button`
+const MobileMenuButton = styled.button`
   display: none;
   width: 48px;
-  height: 48px;
-  background: rgba(139, 92, 246, 0.15);
+  height: 48px;  background: rgba(139, 92, 246, 0.15);
   border: 2px solid ${theme.colors.primary};
   border-radius: 12px;
   color: ${theme.colors.primary};
@@ -121,7 +117,6 @@ const NavLink = styled(motion.a)`
   }
 `;
 
-// ✅ Menú Móvil Overlay
 const MobileMenuOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -144,14 +139,13 @@ const MobileMenuOverlay = styled.div`
   }
 `;
 
-// ✅ Botón de Cerrar (ALTO Z-INDEX)
-const CloseButton = styled.button`  position: absolute;
+const CloseButton = styled.button`
+  position: absolute;
   top: 1.5rem;
   right: 1.5rem;
   width: 56px;
   height: 56px;
-  background: rgba(239, 68, 68, 0.2);
-  border: 2px solid #ef4444;
+  background: rgba(239, 68, 68, 0.2);  border: 2px solid #ef4444;
   border-radius: 50%;
   color: #ef4444;
   font-size: 1.75rem;
@@ -173,7 +167,6 @@ const CloseButton = styled.button`  position: absolute;
   }
 `;
 
-// ✅ Enlaces Móviles
 const MobileNavLink = styled.a`
   font-size: clamp(1.3rem, 4vw, 1.5rem);
   font-weight: 600;
@@ -194,15 +187,14 @@ const MobileNavLink = styled.a`
   border: 1px solid rgba(139, 92, 246, 0.3);
   
   &:hover {
-    background: ${theme.colors.primary};    color: white;
+    background: ${theme.colors.primary};
+    color: white;
   }
 `;
 
-// ✅ Scroll to Top
 const ScrollToTopButton = styled(motion.button)`
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
+  bottom: 2rem;  right: 2rem;
   width: 50px;
   height: 50px;
   background: ${theme.colors.gradient};
@@ -224,17 +216,11 @@ const ScrollToTopButton = styled(motion.button)`
   }
 `;
 
-// ✅ COMPONENTE PRINCIPAL
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
   const [showScrollTop, setShowScrollTop] = useState(false);
-
-  // 🔍 DEBUG: Ver estado del menú
-  useEffect(() => {
-    console.log('🔍 Menu estado:', isMobileMenuOpen ? 'ABIERTO' : 'CERRADO');
-  }, [isMobileMenuOpen]);
 
   const scrollToSection = (href) => {
     const element = document.querySelector(href);
@@ -244,6 +230,7 @@ const Navbar = () => {
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     }
   };
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -256,8 +243,7 @@ const Navbar = () => {
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+          const { offsetTop, offsetHeight } = element;          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
             setActiveSection(section);
             break;
           }
@@ -279,20 +265,10 @@ const Navbar = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // ✅ Función para cerrar menú (con debug)
-  const closeMenu = () => {
-    console.log('🔴 CERRANDO menú...');
-    setIsMobileMenuOpen(false);
-  };
-
-  // ✅ Función para abrir menú (con debug)
-  const openMenu = () => {
-    console.log('🟢 ABRIENDO menú...');
-    setIsMobileMenuOpen(true);
-  };
+  const closeMenu = () => setIsMobileMenuOpen(false);
 
   const handleNavClick = (e, href) => {
-    e.preventDefault();    console.log('🔵 Click en enlace:', href);
+    e.preventDefault();
     closeMenu();
     setTimeout(() => scrollToSection(href), 150);
   };
@@ -307,14 +283,6 @@ const Navbar = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const linkVariants = {
-    hidden: { opacity: 0, y: 15 },
-    visible: (i) => ({
-      opacity: 1, y: 0,
-      transition: { delay: i * 0.08, duration: 0.3 },
-    }),
-  };
-
   return (
     <>
       <NavbarContainer className={isScrolled ? 'scrolled' : ''}>
@@ -324,8 +292,7 @@ const Navbar = () => {
             <span>{personalInfo.name.split(' ')[0]}</span>
           </Logo>
 
-          <NavLinks>
-            {NAV_ITEMS.map((item, index) => (
+          <NavLinks>            {NAV_ITEMS.map((item, index) => (
               <NavLink
                 key={item.name}
                 href={item.href}
@@ -337,26 +304,19 @@ const Navbar = () => {
             ))}
           </NavLinks>
 
-          {/* ✅ Botón Hamburguesa */}
           <MobileMenuButton
-            onClick={openMenu}
+            onClick={() => setIsMobileMenuOpen(true)}
             aria-label="Abrir menú"
-            type="button"          >
+            type="button"
+          >
             <FiMenu />
           </MobileMenuButton>
         </NavbarContent>
       </NavbarContainer>
 
-      {/* ✅ Menú Móvil */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <MobileMenuOverlay
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-          >
-            {/* ✅ Botón de Cerrar - MUY VISIBLE */}
+          <MobileMenuOverlay>
             <CloseButton
               onClick={closeMenu}
               aria-label="Cerrar menú"
@@ -365,39 +325,15 @@ const Navbar = () => {
               <FiX />
             </CloseButton>
 
-            {/* ✅ TODOS los enlaces (incluye Inicio) */}
             {NAV_ITEMS.map((item, index) => (
               <MobileNavLink
                 key={item.name}
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
-                style={{
-                  opacity: 0,
-                  animation: `fadeInUp 0.3s ease forwards ${index * 0.08}s`
-                }}
               >
                 {item.name}
               </MobileNavLink>
             ))}
-
-            {/* ✅ Redes Sociales */}
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-              <MobileNavLink
-                href={personalInfo.social.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ maxWidth: '140px', padding: '1rem' }}
-              >
-                GitHub
-              </MobileNavLink>
-              <MobileNavLink                href={personalInfo.social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ maxWidth: '140px', padding: '1rem' }}
-              >
-                LinkedIn
-              </MobileNavLink>
-            </div>
           </MobileMenuOverlay>
         )}
       </AnimatePresence>
@@ -405,8 +341,7 @@ const Navbar = () => {
       <AnimatePresence>
         {showScrollTop && (
           <ScrollToTopButton
-            onClick={scrollToTop}
-            initial={{ opacity: 0, scale: 0.5, y: 20 }}
+            onClick={scrollToTop}            initial={{ opacity: 0, scale: 0.5, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.5, y: 20 }}
             whileHover={{ scale: 1.1 }}
@@ -417,20 +352,6 @@ const Navbar = () => {
           </ScrollToTopButton>
         )}
       </AnimatePresence>
-
-      {/* ✅ Keyframes para animación de enlaces */}
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(15px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </>
   );
 };
