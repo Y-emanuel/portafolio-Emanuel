@@ -22,9 +22,7 @@ const NAVBAR_HEIGHT = 80;
 
 const NavbarContainer = styled.nav`
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0 0 auto 0;
   z-index: 1000;
   height: ${NAVBAR_HEIGHT}px;
   padding: 1rem 2rem;
@@ -93,8 +91,8 @@ const NavLink = styled(motion.a)`
   }
 `;
 
-const MobileMenuButton = styled.button`
-  display: none;
+/* 🔥 Botón base reutilizable */
+const BaseMobileButton = styled.button`
   width: 48px;
   height: 48px;
   border-radius: 12px;
@@ -103,19 +101,37 @@ const MobileMenuButton = styled.button`
   color: ${theme.colors.primary};
   font-size: 1.5rem;
   cursor: pointer;
+  transition: ${theme.transitions.fast};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: rgba(139, 92, 246, 0.25);
+    transform: scale(1.05);
+  }
+`;
+
+const MobileMenuButton = styled(BaseMobileButton)`
+  display: none;
   z-index: 1001;
 
   @media (max-width: ${theme.breakpoints.tablet}) {
     display: flex;
-    align-items: center;
-    justify-content: center;
   }
 `;
 
-const MobileMenuOverlay = styled.div`
+/* 🔥 MISMA FORMA que el botón hamburguesa */
+const CloseButton = styled(BaseMobileButton)`
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+`;
+
+const MobileMenuOverlay = styled(motion.div)`
   position: fixed;
   inset: 0;
-  z-index: 1100; /* 🔥 más alto que navbar */
+  z-index: 1100; /* mayor que navbar */
   background: rgba(15, 23, 42, 0.98);
   backdrop-filter: blur(20px);
 
@@ -124,20 +140,6 @@ const MobileMenuOverlay = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1.5rem;
-`;
-
-const CloseButton = styled.button`
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: 2px solid #ef4444;
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  font-size: 1.75rem;
-  cursor: pointer;
 `;
 
 const MobileNavLink = styled.a`
@@ -175,15 +177,14 @@ const ScrollToTopButton = styled(motion.button)`
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('hero');
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  /* Scroll compensation global */
+  /* Compensar navbar fijo */
   useEffect(() => {
     document.body.style.paddingTop = `${NAVBAR_HEIGHT}px`;
   }, []);
 
-  /* Bloqueo de scroll cuando menú está abierto */
+  /* Bloquear scroll cuando menú abierto */
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? 'hidden' : 'auto';
   }, [isMobileMenuOpen]);
@@ -206,12 +207,6 @@ const Navbar = () => {
     scrollToSection(href);
   };
 
-  const handleLogoClick = (e) => {
-    e.preventDefault();
-    setIsMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   useEffect(() => {
     const onScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -226,7 +221,14 @@ const Navbar = () => {
     <>
       <NavbarContainer className={isScrolled ? 'scrolled' : ''}>
         <NavbarContent>
-          <Logo href="#hero" onClick={handleLogoClick}>
+          <Logo
+            href="#hero"
+            onClick={(e) => {
+              e.preventDefault();
+              setIsMobileMenuOpen(false);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          >
             <FiCode className="icon" />
             <span>{personalInfo.name.split(' ')[0]}</span>
           </Logo>
