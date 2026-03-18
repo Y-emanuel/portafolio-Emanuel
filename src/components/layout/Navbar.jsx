@@ -5,7 +5,6 @@ import { theme } from '../../styles/theme';
 import { personalInfo } from '../../data/personalInfo';
 import { FiMenu, FiX, FiCode, FiArrowUp } from 'react-icons/fi';
 
-// ✅ Constante externa para navegación
 const NAV_ITEMS = [
   { name: 'Inicio', href: '#hero' },
   { name: 'Sobre Mí', href: '#about' },
@@ -15,21 +14,9 @@ const NAV_ITEMS = [
   { name: 'Contacto', href: '#contact' },
 ];
 
-// ✅ Altura del navbar para cálculos de scroll
 const NAVBAR_HEIGHT = 80;
 
-// ✅ Props de motion que NO deben pasar al DOM
-const MOTION_PROPS = [
-  'whileHover', 'whileTap', 'whileDrag', 'whileFocus',
-  'initial', 'animate', 'exit', 'variants', 'transition',
-  'custom', 'onAnimationStart', 'onAnimationComplete',
-  'onHoverStart', 'onHoverEnd', 'onTapStart', 'onTapCancel',
-];
-
-// ✅ Styled Components con shouldForwardProp para filtrar props de motion
-const NavbarContainer = styled.nav.withConfig({
-  shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
-})`
+const NavbarContainer = styled.nav`
   position: fixed;
   top: 0;
   left: 0;
@@ -48,6 +35,7 @@ const NavbarContainer = styled.nav.withConfig({
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
   }
 `;
+
 const NavbarContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
@@ -57,12 +45,9 @@ const NavbarContent = styled.div`
   height: 100%;
 `;
 
-const Logo = styled(motion.a).withConfig({
-  shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
-})`
+const Logo = styled(motion.a)`
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: center;  gap: 0.5rem;
   text-decoration: none;
   font-weight: 700;
   font-size: 1.25rem;
@@ -80,11 +65,9 @@ const Logo = styled(motion.a).withConfig({
     background-clip: text;
   }
   
-  &:hover {
-    .icon {
-      transform: rotate(180deg);
-      transition: transform 0.5s ease;
-    }
+  &:hover .icon {
+    transform: rotate(180deg);
+    transition: transform 0.5s ease;
   }
 `;
 
@@ -97,9 +80,8 @@ const NavLinks = styled.div`
     display: none;
   }
 `;
-const NavLink = styled(motion.a).withConfig({
-  shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
-})`
+
+const NavLink = styled(motion.a)`
   padding: 0.75rem 1.25rem;
   color: ${theme.colors.textMuted};
   text-decoration: none;
@@ -108,13 +90,13 @@ const NavLink = styled(motion.a).withConfig({
   border-radius: 10px;
   transition: ${theme.transitions.fast};
   position: relative;
+  cursor: pointer;
   
   &::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%) scaleX(0);
+    left: 50%;    transform: translateX(-50%) scaleX(0);
     width: 60%;
     height: 2px;
     background: ${theme.colors.gradient};
@@ -125,16 +107,11 @@ const NavLink = styled(motion.a).withConfig({
   &:hover,
   &.active {
     color: ${theme.colors.text};
-    
-    &::after {
-      transform: translateX(-50%) scaleX(1);
-    }
+    &::after { transform: translateX(-50%) scaleX(1); }
   }
 `;
 
-const MobileMenuButton = styled(motion.button).withConfig({
-  shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
-})`
+const MobileMenuButton = styled(motion.button)`
   display: none;
   width: 45px;
   height: 45px;
@@ -145,7 +122,9 @@ const MobileMenuButton = styled(motion.button).withConfig({
   font-size: 1.5rem;
   cursor: pointer;
   transition: ${theme.transitions.fast};
-    @media (max-width: ${theme.breakpoints.tablet}) {
+  z-index: 1001;
+  
+  @media (max-width: ${theme.breakpoints.tablet}) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -157,7 +136,7 @@ const MobileMenuButton = styled(motion.button).withConfig({
   }
 `;
 
-const MobileMenu = styled(motion.div)`
+const MobileMenuOverlay = styled(motion.div)`
   position: fixed;
   top: 0;
   left: 0;
@@ -166,11 +145,10 @@ const MobileMenu = styled(motion.div)`
   background: rgba(15, 23, 42, 0.98);
   backdrop-filter: blur(20px);
   z-index: 999;
-  display: flex;
-  flex-direction: column;
+  display: flex;  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
+  gap: 1.5rem;
   padding: 2rem;
   overflow-y: auto;
   
@@ -179,45 +157,44 @@ const MobileMenu = styled(motion.div)`
   }
 `;
 
-// ✅ Botón de cerrar con z-index alto para asegurar que sea clicable
 const CloseButton = styled(motion.button)`
   position: absolute;
-  top: 2rem;
-  right: 2rem;
-  width: 45px;
-  height: 45px;
-  background: rgba(139, 92, 246, 0.1);
-  border: 1px solid rgba(139, 92, 246, 0.3);
-  border-radius: 12px;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 50px;
+  height: 50px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 2px solid ${theme.colors.primary};
+  border-radius: 50%;
   color: ${theme.colors.primary};
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;  z-index: 1001;  /* ✅ Más alto que el menú para asegurar clic */
+  justify-content: center;
+  z-index: 1002;
   transition: ${theme.transitions.fast};
   
   &:hover {
-    background: rgba(139, 92, 246, 0.2);
-    transform: scale(1.1) rotate(90deg);
+    background: ${theme.colors.primary};
+    color: white;
+    transform: rotate(90deg);
   }
   
   &:active {
     transform: scale(0.95);
   }
   
-  /* ✅ Área de toque más grande para móvil */
+  /* ✅ Área de toque grande para móvil */
   @media (max-width: ${theme.breakpoints.mobile}) {
-    width: 50px;
-    height: 50px;
-    padding: 0.5rem;
+    width: 56px;
+    height: 56px;
+    top: 1rem;
+    right: 1rem;
   }
 `;
 
-const MobileNavLink = styled(motion.a).withConfig({
-  shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
-})`
-  font-size: 1.5rem;
+const MobileNavLink = styled(motion.a)`  font-size: clamp(1.3rem, 4vw, 1.5rem);
   font-weight: 600;
   color: ${theme.colors.text};
   text-decoration: none;
@@ -226,8 +203,13 @@ const MobileNavLink = styled(motion.a).withConfig({
   transition: ${theme.transitions.fast};
   position: relative;
   width: 100%;
+  max-width: 300px;
   text-align: center;
   cursor: pointer;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   &::before {
     content: '';
@@ -242,24 +224,32 @@ const MobileNavLink = styled(motion.a).withConfig({
   
   &:hover {
     color: white;
-    
-    &::before {      opacity: 1;
-    }
-  }
-  
-  /* ✅ Área de toque más grande para móvil */
-  @media (max-width: ${theme.breakpoints.mobile}) {
-    padding: 1.25rem 2rem;
-    min-height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    &::before { opacity: 1; }
   }
 `;
 
-const ScrollToTopButton = styled(motion.button).withConfig({
-  shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
-})`
+const SocialLinksMobile = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  
+  a {
+    padding: 0.75rem 1.5rem;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid ${theme.colors.primary};
+    border-radius: 10px;
+    color: ${theme.colors.text};
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: ${theme.transitions.fast};
+    
+    &:hover {      background: ${theme.colors.primary};
+      color: white;
+    }
+  }
+`;
+
+const ScrollToTopButton = styled(motion.button)`
   position: fixed;
   bottom: 2rem;
   right: 2rem;
@@ -284,36 +274,27 @@ const ScrollToTopButton = styled(motion.button).withConfig({
   }
 `;
 
-// ✅ Exportación por DEFECTO
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // ✅ Función para scroll suave considerando altura del navbar
-  const scrollToSection = (href) => {    const element = document.querySelector(href);
+  const scrollToSection = (href) => {
+    const element = document.querySelector(href);
     if (element) {
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.scrollY - NAVBAR_HEIGHT;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
     }
   };
 
-  // Efecto para detectar scroll y sección activa
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
-      setShowScrollTop(window.scrollY > 400);
-      
-      // ✅ Offset ajustado para móvil
+      setShowScrollTop(window.scrollY > 400);      
       const offset = window.innerWidth <= 768 ? 100 : 150;
       const scrollPosition = window.scrollY + offset;
-      
       const sections = NAV_ITEMS.map(item => item.href.replace('#', ''));
       
       for (const section of sections) {
@@ -332,53 +313,43 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // ✅ Cerrar menú móvil al cambiar orientación o resize
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 768) {
         setIsMobileMenuOpen(false);
       }
     };
-    
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);  }, []);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  // ✅ Función para cerrar menú
-  const closeMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+  // ✅ Función simple para cerrar menú
+  const closeMenu = () => setIsMobileMenuOpen(false);
 
   const handleNavClick = (e, href) => {
     e.preventDefault();
     closeMenu();
-    scrollToSection(href);
+    setTimeout(() => scrollToSection(href), 100); // Pequeño delay para que cierre primero
   };
 
   const handleLogoClick = (e) => {
     e.preventDefault();
+    closeMenu();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const menuVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: { 
-      opacity: 1, 
-      scale: 1,
-      transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] }
-    },
-    exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } },
+    hidden: { opacity: 0, scale: 0.95 },    visible: { opacity: 1, scale: 1, transition: { duration: 0.25, ease: 'easeOut' } },
+    exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
   };
 
   const linkVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 15 },
     visible: (i) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: i * 0.1, duration: 0.4 },
+      opacity: 1, y: 0,
+      transition: { delay: i * 0.08, duration: 0.3 },
     }),
   };
 
@@ -386,11 +357,7 @@ const Navbar = () => {
     <>
       <NavbarContainer className={isScrolled ? 'scrolled' : ''}>
         <NavbarContent>
-          <Logo 
-            href="#hero" 
-            onClick={handleLogoClick}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}          >
+          <Logo href="#hero" onClick={handleLogoClick} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <FiCode className="icon" />
             <span>{personalInfo.name.split(' ')[0]}</span>
           </Logo>
@@ -423,91 +390,56 @@ const Navbar = () => {
           </MobileMenuButton>
         </NavbarContent>
       </NavbarContainer>
-
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <MobileMenu
+          <MobileMenuOverlay
             variants={menuVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
-            onClick={closeMenu}  /* ✅ Cerrar al hacer clic fuera de los enlaces */
           >
-            {/* ✅ Botón de cerrar separado con CloseButton */}
+            {/* ✅ Botón de cerrar - SIMPLIFICADO */}
             <CloseButton
-              onClick={(e) => {
-                e.stopPropagation();  /* ✅ Evitar que el clic burbujee al MobileMenu */
-                closeMenu();
-              }}
-              aria-label="Cerrar menú"              whileHover={{ scale: 1.1, rotate: 90 }}
+              onClick={closeMenu}
+              aria-label="Cerrar menú"
+              whileHover={{ scale: 1.1, rotate: 90 }}
               whileTap={{ scale: 0.95 }}
             >
-              <FiX size={24} />
+              <FiX />
             </CloseButton>
 
+            {/* Enlaces de navegación */}
             {NAV_ITEMS.map((item, index) => (
               <MobileNavLink
                 key={item.name}
                 href={item.href}
-                onClick={(e) => {
-                  e.stopPropagation();  /* ✅ Evitar cerrar menú al hacer clic en enlace */
-                  handleNavClick(e, item.href);
-                }}
+                onClick={(e) => handleNavClick(e, item.href)}
                 custom={index}
                 variants={linkVariants}
                 initial="hidden"
                 animate="visible"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
                 {item.name}
               </MobileNavLink>
             ))}
 
-            <motion.div 
-              style={{ 
-                display: 'flex', 
-                gap: '1rem', 
-                marginTop: '2rem', 
-                width: '100%', 
-                justifyContent: 'center',
-                flexWrap: 'wrap'
-              }}
-              variants={linkVariants}
-              custom={NAV_ITEMS.length}
-              initial="hidden"
-              animate="visible"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <MobileNavLink 
-                href={personalInfo.social.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                custom={NAV_ITEMS.length + 1}
-                variants={linkVariants}
-                whileHover={{ scale: 1.1 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                GitHub              </MobileNavLink>
-              <MobileNavLink 
-                href={personalInfo.social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                custom={NAV_ITEMS.length + 2}
-                variants={linkVariants}
-                whileHover={{ scale: 1.1 }}
-                onClick={(e) => e.stopPropagation()}
-              >
+            {/* Redes sociales */}
+            <SocialLinksMobile>
+              <a href={personalInfo.social.github} target="_blank" rel="noopener noreferrer">
+                GitHub
+              </a>
+              <a href={personalInfo.social.linkedin} target="_blank" rel="noopener noreferrer">
                 LinkedIn
-              </MobileNavLink>
-            </motion.div>
-          </MobileMenu>
+              </a>
+            </SocialLinksMobile>
+          </MobileMenuOverlay>
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {showScrollTop && (
-          <ScrollToTopButton
+        {showScrollTop && (          <ScrollToTopButton
             onClick={scrollToTop}
             initial={{ opacity: 0, scale: 0.5, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
