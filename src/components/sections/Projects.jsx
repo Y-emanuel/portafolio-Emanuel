@@ -10,6 +10,12 @@ const Section = styled.section`
   padding: 6rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+  overflow-x: hidden;
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 4rem 1rem;
+  }
 `;
 
 const FilterContainer = styled.div`
@@ -18,6 +24,7 @@ const FilterContainer = styled.div`
   gap: 0.75rem;
   margin-bottom: 3rem;
   flex-wrap: wrap;
+  width: 100%;
 `;
 
 const FilterButton = styled(motion.button)`
@@ -36,23 +43,39 @@ const FilterButton = styled(motion.button)`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  white-space: nowrap;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: ${theme.shadows.futuristic};
-  }
+    box-shadow: ${theme.shadows.futuristic};  }
 
   &:active {
     transform: translateY(0);
   }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
 `;
 
-// ✅ CAMBIO 1: styled(motion.div) para aceptar props de motion
+// ✅ CAMBIO: Grid responsive con media queries
 const ProjectsGrid = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
+  width: 100%;
+  
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 `;
 
 const ProjectCard = styled(motion.article)`
@@ -64,11 +87,16 @@ const ProjectCard = styled(motion.article)`
   transition: ${theme.transitions.smooth};
   display: flex;
   flex-direction: column;
-
+  width: 100%;
+  max-width: 100%;
+  
   &:hover {
     border-color: ${theme.colors.primary};
     box-shadow: ${theme.shadows.hover};
     transform: translateY(-8px);
+  }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {    border-radius: 12px;
   }
 `;
 
@@ -76,7 +104,8 @@ const ProjectImage = styled.div`
   position: relative;
   height: 200px;
   overflow: hidden;
-
+  width: 100%;
+  
   img {
     width: 100%;
     height: 100%;
@@ -104,6 +133,10 @@ const ProjectImage = styled.div`
   ${ProjectCard}:hover &::after {
     opacity: 1;
   }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    height: 180px;
+  }
 `;
 
 const FeaturedBadge = styled(motion.span)`
@@ -112,8 +145,7 @@ const FeaturedBadge = styled(motion.span)`
   right: 1rem;
   padding: 0.5rem 1rem;
   background: ${theme.colors.gradient};
-  border-radius: 20px;
-  font-size: 0.75rem;
+  border-radius: 20px;  font-size: 0.75rem;
   font-weight: 700;
   color: white;
   z-index: 10;
@@ -121,6 +153,14 @@ const FeaturedBadge = styled(motion.span)`
   align-items: center;
   gap: 0.25rem;
   box-shadow: ${theme.shadows.futuristic};
+  white-space: nowrap;
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.7rem;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
 `;
 
 const ProjectContent = styled.div`
@@ -129,35 +169,55 @@ const ProjectContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-
+  width: 100%;
+  
   h3 {
-    font-size: 1.25rem;
+    font-size: clamp(1.1rem, 4vw, 1.25rem);
     font-weight: 700;
     color: ${theme.colors.text};
     margin-bottom: 0.5rem;
+    line-height: 1.3;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   p {
-    font-size: 0.95rem;
+    font-size: clamp(0.9rem, 3vw, 0.95rem);
     color: ${theme.colors.textMuted};
     line-height: 1.6;
     flex: 1;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
-`;
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 1.25rem 1rem;
+    gap: 0.85rem;
+  }`;
 
 const TechTags = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  width: 100%;
 
   span {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.75rem;
+    font-size: clamp(0.7rem, 2.5vw, 0.75rem);
+    padding: 0.25rem 0.65rem;
     background: rgba(139, 92, 246, 0.15);
     border: 1px solid rgba(139, 92, 246, 0.4);
     border-radius: 20px;
     color: ${theme.colors.accent};
     font-weight: 500;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    
+    @media (max-width: ${theme.breakpoints.mobile}) {
+      padding: 0.2rem 0.5rem;
+      font-size: 0.7rem;
+      border-radius: 16px;
+    }
   }
 `;
 
@@ -165,9 +225,17 @@ const ButtonGroup = styled.div`
   display: flex;
   gap: 0.75rem;
   margin-top: auto;
+  width: 100%;
+  flex-wrap: wrap;
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
 
   a {
     flex: 1;
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -175,11 +243,12 @@ const ButtonGroup = styled.div`
     padding: 0.75rem;
     background: ${theme.colors.primary};
     color: white;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 0.875rem;
+    border-radius: 10px;    font-weight: 600;
+    font-size: clamp(0.85rem, 3vw, 0.875rem);
     text-decoration: none;
     transition: ${theme.transitions.fast};
+    word-break: break-word;
+    overflow-wrap: break-word;
 
     &:hover {
       background: ${theme.colors.primaryDark};
@@ -197,6 +266,12 @@ const ButtonGroup = styled.div`
         color: white;
       }
     }
+    
+    @media (max-width: ${theme.breakpoints.mobile}) {
+      padding: 0.65rem;
+      font-size: 0.85rem;
+      min-height: 44px;
+    }
   }
 `;
 
@@ -204,6 +279,7 @@ const NoProjectsMessage = styled(motion.div)`
   text-align: center;
   padding: 4rem 2rem;
   color: ${theme.colors.textMuted};
+  width: 100%;
 
   svg {
     font-size: 4rem;
@@ -212,9 +288,18 @@ const NoProjectsMessage = styled(motion.div)`
   }
 
   h3 {
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
     color: ${theme.colors.text};
     margin-bottom: 0.5rem;
+    word-break: break-word;
+  }  
+  p {
+    font-size: clamp(0.9rem, 3vw, 1rem);
+    word-break: break-word;
+  }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 3rem 1rem;
   }
 `;
 
@@ -256,8 +341,7 @@ const Projects = () => {
         subtitle="Explorá mi trabajo y contribuciones"
       />
 
-      <FilterContainer>
-        <FilterButton
+      <FilterContainer>        <FilterButton
           active={filter === "all"}
           onClick={() => setFilter("all")}
           whileHover={{ scale: 1.05 }}
@@ -279,7 +363,6 @@ const Projects = () => {
         ))}
       </FilterContainer>
 
-      {/* ✅ CAMBIO 1: ProjectsGrid ahora es motion.div, acepta props de motion */}
       <ProjectsGrid
         variants={containerVariants}
         initial="hidden"
@@ -307,8 +390,7 @@ const Projects = () => {
                       transition={{ delay: 0.3 }}
                     >
                       ⭐ Destacado
-                    </FeaturedBadge>
-                  )}
+                    </FeaturedBadge>                  )}
                   <img
                     src={project.image}
                     alt={project.title}
@@ -357,8 +439,7 @@ const Projects = () => {
                       </motion.a>
                     )}
                   </ButtonGroup>
-                </ProjectContent>
-              </ProjectCard>
+                </ProjectContent>              </ProjectCard>
             ))
           ) : (
             <NoProjectsMessage
