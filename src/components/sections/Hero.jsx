@@ -11,7 +11,7 @@ const Section = styled.section`
   justify-content: center;
   padding: 2rem;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;  /* ✅ Evitar scroll horizontal en móvil */
   
   &::before {
     content: '';
@@ -24,6 +24,11 @@ const Section = styled.section`
     right: -200px;
     animation: pulse 8s ease-in-out infinite;
     pointer-events: none;
+    
+    /* ✅ Ocultar efecto en móvil para mejor performance */
+    @media (max-width: ${theme.breakpoints.tablet}) {
+      display: none;
+    }
   }
   
   @keyframes pulse {
@@ -34,6 +39,7 @@ const Section = styled.section`
 
 const Content = styled.div`
   max-width: 1200px;
+  width: 100%;  /* ✅ Asegurar que no se desborde */
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
@@ -41,13 +47,13 @@ const Content = styled.div`
   
   @media (max-width: ${theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
-    text-align: center;
+    text-align: center;    gap: 2rem;  /* ✅ Menos gap en móvil */
   }
 `;
 
 const TextContent = styled.div`
   h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(2rem, 8vw, 4rem);  /* ✅ clamp más agresivo para móvil */
     font-weight: 800;
     line-height: 1.1;
     margin-bottom: 1rem;
@@ -61,10 +67,12 @@ const TextContent = styled.div`
   }
   
   .subtitle {
-    font-size: 1.25rem;
+    font-size: clamp(1rem, 4vw, 1.25rem);  /* ✅ Texto responsive */
     color: ${theme.colors.textMuted};
     margin-bottom: 2rem;
     max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;  /* ✅ Centrar en móvil */
   }
   
   .age-badge {
@@ -78,6 +86,8 @@ const TextContent = styled.div`
     font-size: 0.9rem;
     margin-bottom: 1.5rem;
     color: ${theme.colors.accent};
+    margin-left: auto;
+    margin-right: auto;  /* ✅ Centrar en móvil */
   }
 `;
 
@@ -86,8 +96,7 @@ const ImageWrapper = styled(motion.div)`
   justify-content: center;
   
   @media (max-width: ${theme.breakpoints.tablet}) {
-    order: -1;
-    margin-bottom: 2rem;
+    order: -1;    margin-bottom: 2rem;
   }
   
   .profile-container {
@@ -96,7 +105,7 @@ const ImageWrapper = styled(motion.div)`
     height: 280px;
     
     @media (max-width: ${theme.breakpoints.mobile}) {
-      width: 220px;
+      width: 220px;  /* ✅ Más pequeño en móvil */
       height: 220px;
     }
   }
@@ -124,6 +133,11 @@ const ImageWrapper = styled(motion.div)`
     border-top-color: ${theme.colors.primary};
     border-bottom-color: ${theme.colors.accent};
     animation: spin 3s linear infinite;
+    
+    /* ✅ Ocultar anillo en móvil para mejor performance */
+    @media (max-width: ${theme.breakpoints.mobile}) {
+      display: none;
+    }
   }
   
   @keyframes spin {
@@ -131,21 +145,31 @@ const ImageWrapper = styled(motion.div)`
   }
 `;
 
-const ButtonGroup = styled.div`
-  display: flex;
+const ButtonGroup = styled.div`  display: flex;
   gap: 1rem;
   flex-wrap: wrap;
+  justify-content: flex-start;
   
   @media (max-width: ${theme.breakpoints.tablet}) {
-    justify-content: center;
+    justify-content: center;  /* ✅ Centrar botones en móvil */
   }
 `;
 
-// ✅ Función helper para scroll suave
+// ✅ Función helper para scroll suave (compatible con móvil)
 const scrollToSection = (id) => {
   const element = document.getElementById(id);
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // ✅ Offset para navbar fija si la tienes
+    const offset = 80; 
+    const bodyRect = document.body.getBoundingClientRect().top;
+    const elementRect = element.getBoundingClientRect().top;
+    const elementPosition = elementRect - bodyRect;
+    const offsetPosition = elementPosition - offset;
+    
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
   }
 };
 
@@ -154,10 +178,7 @@ export const Hero = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
-      },
+      transition: { staggerChildren: 0.2, delayChildren: 0.3 },
     },
   };
 
@@ -173,8 +194,7 @@ export const Hero = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-        >
-          <TextContent>
+        >          <TextContent>
             <motion.div variants={itemVariants} className="age-badge">
               <span>👋</span> {personalInfo.age} años
             </motion.div>
@@ -189,24 +209,22 @@ export const Hero = () => {
             </motion.p>
             
             <ButtonGroup>
-              {/* ✅ Botón Proyectos con onClick para scroll suave */}
               <AnimatedButton 
                 as="button"
                 onClick={() => scrollToSection('projects')}
                 variant="primary"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                $whileHover={{ scale: 1.05 }}  /* ✅ Transient prop */
+                $whileTap={{ scale: 0.95 }}
               >
                 Ver Proyectos →
               </AnimatedButton>
               
-              {/* ✅ Botón Contacto con onClick para scroll suave */}
               <AnimatedButton 
                 as="button"
                 onClick={() => scrollToSection('contact')}
                 variant="outline"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                $whileHover={{ scale: 1.05 }}
+                $whileTap={{ scale: 0.95 }}
               >
                 Contáctame
               </AnimatedButton>
@@ -225,7 +243,7 @@ export const Hero = () => {
               src={personalInfo.photo} 
               alt={personalInfo.name}
               className="profile-image"
-              onError={(e) => {
+              loading="eager"  /* ✅ Carga prioritaria para LCP */              onError={(e) => {
                 e.target.src = 'https://ui-avatars.com/api/?name=Brian+Ybalo&size=280&background=8B5CF6&color=fff&bold=true';
               }}
             />
