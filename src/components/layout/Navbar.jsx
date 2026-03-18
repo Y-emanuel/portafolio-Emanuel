@@ -29,11 +29,16 @@ const NavbarContainer = styled.nav`
   background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(139, 92, 246, 0.2);
-  transition: ${theme.transitions.fast};
+  transition: all 0.3s ease;
 
   &.scrolled {
     background: rgba(15, 23, 42, 0.95);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  &.hidden {
+    opacity: 0;
+    pointer-events: none;
   }
 `;
 
@@ -85,13 +90,12 @@ const NavLink = styled(motion.a)`
   border-radius: 10px;
   transition: ${theme.transitions.fast};
 
-  &:hover,
-  &.active {
+  &:hover {
     color: ${theme.colors.text};
   }
 `;
 
-/* 🔥 Botón base reutilizable */
+/* Botón base reutilizable */
 const BaseMobileButton = styled.button`
   width: 48px;
   height: 48px;
@@ -121,17 +125,16 @@ const MobileMenuButton = styled(BaseMobileButton)`
   }
 `;
 
-/* 🔥 MISMA FORMA que el botón hamburguesa */
 const CloseButton = styled(BaseMobileButton)`
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
+  top: 2rem;
+  right: 2rem;
 `;
 
 const MobileMenuOverlay = styled(motion.div)`
   position: fixed;
   inset: 0;
-  z-index: 1100; /* mayor que navbar */
+  z-index: 1100;
   background: rgba(15, 23, 42, 0.98);
   backdrop-filter: blur(20px);
 
@@ -189,6 +192,16 @@ const Navbar = () => {
     document.body.style.overflow = isMobileMenuOpen ? 'hidden' : 'auto';
   }, [isMobileMenuOpen]);
 
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+      setShowScrollTop(window.scrollY > 400);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   const scrollToSection = (href) => {
     const element = document.querySelector(href);
     if (!element) return;
@@ -207,19 +220,13 @@ const Navbar = () => {
     scrollToSection(href);
   };
 
-  useEffect(() => {
-    const onScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-      setShowScrollTop(window.scrollY > 400);
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   return (
     <>
-      <NavbarContainer className={isScrolled ? 'scrolled' : ''}>
+      <NavbarContainer
+        className={`${isScrolled ? 'scrolled' : ''} ${
+          isMobileMenuOpen ? 'hidden' : ''
+        }`}
+      >
         <NavbarContent>
           <Logo
             href="#hero"
