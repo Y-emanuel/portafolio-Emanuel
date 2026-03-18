@@ -8,14 +8,31 @@ const Section = styled.section`
   padding: 6rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  width: 100%;
+  overflow-x: hidden;
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 4rem 1rem;
+  }
 `;
 
-// ✅ CAMBIO: styled(motion.div) para aceptar props de motion
+// ✅ CAMBIO: Grid responsive con media queries
 const EducationGrid = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
   margin-top: 3rem;
+  width: 100%;
+  
+  @media (max-width: ${theme.breakpoints.tablet}) {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 `;
 
 const EducationCard = styled(motion.div)`
@@ -27,10 +44,10 @@ const EducationCard = styled(motion.div)`
   transition: ${theme.transitions.smooth};
   position: relative;
   overflow: hidden;
+  width: 100%;
   
   &::before {
-    content: '';
-    position: absolute;
+    content: '';    position: absolute;
     top: 0;
     left: 0;
     width: 4px;
@@ -43,6 +60,11 @@ const EducationCard = styled(motion.div)`
     border-color: ${theme.colors.primary};
     box-shadow: ${theme.shadows.futuristic};
     transform: translateY(-8px);
+  }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 1.5rem 1.25rem;
+    border-radius: 12px;
   }
 `;
 
@@ -64,24 +86,42 @@ const CardHeader = styled.div`
     color: ${theme.colors.primary};
     font-size: 1.5rem;
   }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    
+    .icon {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      font-size: 1.25rem;
+    }  }
 `;
 
 const CardContent = styled.div`
+  flex: 1;
+  
   h3 {
-    font-size: 1.25rem;
+    font-size: clamp(1.1rem, 4vw, 1.25rem);
     font-weight: 700;
     margin-bottom: 0.5rem;
     color: ${theme.colors.text};
+    line-height: 1.3;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
   
   .institution {
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 3vw, 1rem);
     color: ${theme.colors.accent};
     font-weight: 600;
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 `;
 
@@ -95,45 +135,70 @@ const MetaInfo = styled.div`
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.875rem;
+    font-size: clamp(0.8rem, 2.5vw, 0.875rem);
     color: ${theme.colors.textMuted};
+    word-break: break-word;
+    overflow-wrap: break-word;
     
     svg {
       color: ${theme.colors.primary};
+      min-width: 16px;
     }
+  }
+    @media (max-width: ${theme.breakpoints.mobile}) {
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
   }
 `;
 
 const ContentList = styled.ul`
   list-style: none;
   padding: 0;
+  margin: 0;
+  width: 100%;
 `;
 
 const ListItem = styled(motion.li)`
   position: relative;
   padding-left: 1.5rem;
   margin-bottom: 0.75rem;
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 3vw, 0.95rem);
   color: ${theme.colors.textMuted};
   line-height: 1.6;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.5rem;
+  width: 100%;
   
   &::before {
     content: '▹';
     position: absolute;
     left: 0;
+    top: 0;
     color: ${theme.colors.accent};
     font-weight: bold;
+  }
+  
+  > span:first-child {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
   
   &:hover {
     color: ${theme.colors.text};
     transform: translateX(5px);
     transition: ${theme.transitions.fast};
+  }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {    padding-left: 1.25rem;
+    margin-bottom: 0.65rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
   }
 `;
 
@@ -145,10 +210,11 @@ const StatusBadge = styled(motion.span)`
   background: rgba(34, 211, 238, 0.15);
   border: 1px solid ${theme.colors.accent};
   border-radius: 30px;
-  font-size: 0.875rem;
+  font-size: clamp(0.8rem, 2.5vw, 0.875rem);
   color: ${theme.colors.accent};
   font-weight: 600;
   margin-top: 1rem;
+  white-space: nowrap;
   
   &::before {
     content: '';
@@ -163,6 +229,12 @@ const StatusBadge = styled(motion.span)`
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.5; transform: scale(1.2); }
   }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+  }
 `;
 
 // ✅ Badge para items individuales
@@ -171,9 +243,9 @@ const ItemBadge = styled.span`
   align-items: center;
   gap: 0.25rem;
   padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 500;
+  font-size: clamp(0.7rem, 2.5vw, 0.75rem);  font-weight: 500;
   border-radius: 20px;
+  white-space: nowrap;
   
   &.completed {
     background: rgba(34, 197, 94, 0.15);
@@ -185,6 +257,17 @@ const ItemBadge = styled.span`
     background: rgba(34, 211, 238, 0.15);
     color: ${theme.colors.accent};
     border: 1px solid rgba(34, 211, 238, 0.4);
+  }
+  
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+    gap: 0.2rem;
+    
+    svg {
+      width: 10px;
+      height: 10px;
+    }
   }
 `;
 
@@ -209,8 +292,7 @@ const Education = () => {
         { name: "APIs REST y GraphQL", status: "learning" },
       ],
     },
-    {
-      id: 2,
+    {      id: 2,
       title: "Desarrollo Web Frontend",
       institution: "Autoformación",
       period: "2023 – 2024",
@@ -259,8 +341,7 @@ const Education = () => {
           <FiLoader size={12} className="animate-spin" /> En aprendizaje
         </ItemBadge>
       );
-    }
-    return null;
+    }    return null;
   };
 
   return (
@@ -270,7 +351,6 @@ const Education = () => {
         subtitle="Mi formación académica y profesional"
       />
       
-      {/* ✅ EducationGrid ahora es motion.div, acepta props de motion */}
       <EducationGrid
         variants={containerVariants}
         initial="hidden"
@@ -310,8 +390,7 @@ const Education = () => {
                 </div>
               </MetaInfo>
               
-              <ContentList>
-                {edu.contents.map((item, i) => (
+              <ContentList>                {edu.contents.map((item, i) => (
                   <ListItem
                     key={i}
                     initial={{ opacity: 0, x: -10 }}
