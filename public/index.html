@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <!-- ✅ Meta tags esenciales para responsive y SEO -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="description" content="Portafolio de Brian Emanuel Ybalo - Desarrollador Full Stack especializado en React y Node.js" />
+    <meta name="theme-color" content="#8B5CF6" />
+    
+    <!-- ✅ Open Graph / Redes Sociales -->
+    <meta property="og:title" content="Brian Emanuel Ybalo | Full Stack Developer" />
+    <meta property="og:description" content="Desarrollador web apasionado por crear soluciones digitales modernas y escalables." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.png" />
+    
+    <!-- ✅ Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Brian Emanuel Ybalo | Full Stack Developer" />
+    <meta name="twitter:description" content="Desarrollador web apasionado por crear soluciones digitales modernas y escalables." />
+    
+    <!-- ✅ Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    
+    <!-- ✅ Manifest para PWA (opcional) -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- ✅ Preconnect para performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- ✅ Título de la página -->
+    <title>Brian Emanuel Ybalo | Full Stack Developer</title>
+  </head>
+  <body>
+    <!-- ✅ Root donde se monta React -->
+    <div id="root"></div>
+    
+    <!-- ✅ Script de entrada de Vite (se inyecta automáticamente en build) -->
+    <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- ✅ Script para registrar Service Worker (PWA - opcional) -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch((err) => {
+            console.log('Service Worker registration failed:', err);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
