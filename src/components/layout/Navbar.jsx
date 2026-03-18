@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
-// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-// eslint-disable-next-line no-unused-vars
 import styled from 'styled-components';
-// eslint-disable-next-line no-unused-vars
 import { theme } from '../../styles/theme';
 import { personalInfo } from '../../data/personalInfo';
 import { FiMenu, FiX, FiCode, FiArrowUp } from 'react-icons/fi';
@@ -18,8 +15,21 @@ const NAV_ITEMS = [
   { name: 'Contacto', href: '#contact' },
 ];
 
-// ✅ Styled Components con nombres originales (minúscula)
-const NavbarContainer = styled.nav`
+// ✅ Altura del navbar para cálculos de scroll
+const NAVBAR_HEIGHT = 80;
+
+// ✅ Props de motion que NO deben pasar al DOM
+const MOTION_PROPS = [
+  'whileHover', 'whileTap', 'whileDrag', 'whileFocus',
+  'initial', 'animate', 'exit', 'variants', 'transition',
+  'custom', 'onAnimationStart', 'onAnimationComplete',
+  'onHoverStart', 'onHoverEnd', 'onTapStart', 'onTapCancel',
+];
+
+// ✅ Styled Components con shouldForwardProp para filtrar props de motion
+const NavbarContainer = styled.nav.withConfig({
+  shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
+})`
   position: fixed;
   top: 0;
   left: 0;
@@ -30,6 +40,7 @@ const NavbarContainer = styled.nav`
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(139, 92, 246, 0.2);
   transition: ${theme.transitions.fast};
+  height: ${NAVBAR_HEIGHT}px;
   
   &.scrolled {
     padding: 0.75rem 2rem;
@@ -37,16 +48,18 @@ const NavbarContainer = styled.nav`
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
   }
 `;
-
 const NavbarContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 100%;
 `;
 
-const Logo = styled(motion.a)`
+const Logo = styled(motion.a).withConfig({
+  shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
+})`
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -84,8 +97,9 @@ const NavLinks = styled.div`
     display: none;
   }
 `;
-
-const NavLink = styled(motion.a)`
+const NavLink = styled(motion.a).withConfig({
+  shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
+})`
   padding: 0.75rem 1.25rem;
   color: ${theme.colors.textMuted};
   text-decoration: none;
@@ -118,7 +132,9 @@ const NavLink = styled(motion.a)`
   }
 `;
 
-const MobileMenuButton = styled(motion.button)`
+const MobileMenuButton = styled(motion.button).withConfig({
+  shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
+})`
   display: none;
   width: 45px;
   height: 45px;
@@ -129,8 +145,7 @@ const MobileMenuButton = styled(motion.button)`
   font-size: 1.5rem;
   cursor: pointer;
   transition: ${theme.transitions.fast};
-  
-  @media (max-width: ${theme.breakpoints.tablet}) {
+    @media (max-width: ${theme.breakpoints.tablet}) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -157,13 +172,16 @@ const MobileMenu = styled(motion.div)`
   justify-content: center;
   gap: 2rem;
   padding: 2rem;
+  overflow-y: auto;
   
   @media (min-width: ${theme.breakpoints.tablet}) {
     display: none;
   }
 `;
 
-const MobileNavLink = styled(motion.a)`
+const MobileNavLink = styled(motion.a).withConfig({
+  shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
+})`
   font-size: 1.5rem;
   font-weight: 600;
   color: ${theme.colors.text};
@@ -172,10 +190,11 @@ const MobileNavLink = styled(motion.a)`
   border-radius: 12px;
   transition: ${theme.transitions.fast};
   position: relative;
+  width: 100%;
+  text-align: center;
   
   &::before {
-    content: '';
-    position: absolute;
+    content: '';    position: absolute;
     inset: 0;
     background: ${theme.colors.gradient};
     border-radius: 12px;
@@ -193,7 +212,9 @@ const MobileNavLink = styled(motion.a)`
   }
 `;
 
-const ScrollToTopButton = styled(motion.button)`
+const ScrollToTopButton = styled(motion.button).withConfig({
+  shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
+})`
   position: fixed;
   bottom: 2rem;
   right: 2rem;
@@ -222,17 +243,33 @@ const ScrollToTopButton = styled(motion.button)`
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('hero');
-  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [activeSection, setActiveSection] = useState('hero');  const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Efecto para detectar scroll
+  // ✅ Función para scroll suave considerando altura del navbar
+  const scrollToSection = (href) => {
+    const element = document.querySelector(href);
+    if (element) {
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.scrollY - NAVBAR_HEIGHT;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Efecto para detectar scroll y sección activa
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
       setShowScrollTop(window.scrollY > 400);
       
+      // ✅ Offset ajustado para móvil
+      const offset = window.innerWidth <= 768 ? 100 : 150;
+      const scrollPosition = window.scrollY + offset;
+      
       const sections = NAV_ITEMS.map(item => item.href.replace('#', ''));
-      const scrollPosition = window.scrollY + 150;
       
       for (const section of sections) {
         const element = document.getElementById(section);
@@ -246,17 +283,25 @@ const Navbar = () => {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // ✅ Cerrar menú móvil al cambiar orientación o resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setIsMobileMenuOpen(false);
+      }    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleNavClick = (e, href) => {
     e.preventDefault();
     setIsMobileMenuOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToSection(href);
   };
 
   const handleLogoClick = (e) => {
@@ -296,8 +341,7 @@ const Navbar = () => {
             onClick={handleLogoClick}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-          >
-            <FiCode className="icon" />
+          >            <FiCode className="icon" />
             <span>{personalInfo.name.split(' ')[0]}</span>
           </Logo>
 
@@ -337,13 +381,16 @@ const Navbar = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
+            onClick={() => setIsMobileMenuOpen(false)}
           >
             <MobileMenuButton
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMobileMenuOpen(false);
+              }}
               style={{ position: 'absolute', top: '2rem', right: '2rem' }}
               whileHover={{ scale: 1.1, rotate: 90 }}
-              whileTap={{ scale: 0.9 }}
-              aria-label="Cerrar menú"
+              whileTap={{ scale: 0.9 }}              aria-label="Cerrar menú"
             >
               <FiX />
             </MobileMenuButton>
@@ -352,7 +399,10 @@ const Navbar = () => {
               <MobileNavLink
                 key={item.name}
                 href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNavClick(e, item.href);
+                }}
                 custom={index}
                 variants={linkVariants}
                 initial="hidden"
@@ -365,11 +415,12 @@ const Navbar = () => {
             ))}
 
             <motion.div 
-              style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}
+              style={{ display: 'flex', gap: '1rem', marginTop: '2rem', width: '100%', justifyContent: 'center' }}
               variants={linkVariants}
               custom={NAV_ITEMS.length}
               initial="hidden"
               animate="visible"
+              onClick={(e) => e.stopPropagation()}
             >
               <MobileNavLink 
                 href={personalInfo.social.github}
@@ -378,6 +429,7 @@ const Navbar = () => {
                 custom={NAV_ITEMS.length + 1}
                 variants={linkVariants}
                 whileHover={{ scale: 1.1 }}
+                onClick={(e) => e.stopPropagation()}
               >
                 GitHub
               </MobileNavLink>
@@ -387,7 +439,7 @@ const Navbar = () => {
                 rel="noopener noreferrer"
                 custom={NAV_ITEMS.length + 2}
                 variants={linkVariants}
-                whileHover={{ scale: 1.1 }}
+                whileHover={{ scale: 1.1 }}                onClick={(e) => e.stopPropagation()}
               >
                 LinkedIn
               </MobileNavLink>
