@@ -179,6 +179,41 @@ const MobileMenu = styled(motion.div)`
   }
 `;
 
+// ✅ Botón de cerrar con z-index alto para asegurar que sea clicable
+const CloseButton = styled(motion.button)`
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  width: 45px;
+  height: 45px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  color: ${theme.colors.primary};
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;  z-index: 1001;  /* ✅ Más alto que el menú para asegurar clic */
+  transition: ${theme.transitions.fast};
+  
+  &:hover {
+    background: rgba(139, 92, 246, 0.2);
+    transform: scale(1.1) rotate(90deg);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+  
+  /* ✅ Área de toque más grande para móvil */
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    width: 50px;
+    height: 50px;
+    padding: 0.5rem;
+  }
+`;
+
 const MobileNavLink = styled(motion.a).withConfig({
   shouldForwardProp: (prop) => !MOTION_PROPS.includes(prop),
 })`
@@ -192,9 +227,11 @@ const MobileNavLink = styled(motion.a).withConfig({
   position: relative;
   width: 100%;
   text-align: center;
+  cursor: pointer;
   
   &::before {
-    content: '';    position: absolute;
+    content: '';
+    position: absolute;
     inset: 0;
     background: ${theme.colors.gradient};
     border-radius: 12px;
@@ -206,9 +243,17 @@ const MobileNavLink = styled(motion.a).withConfig({
   &:hover {
     color: white;
     
-    &::before {
-      opacity: 1;
+    &::before {      opacity: 1;
     }
+  }
+  
+  /* ✅ Área de toque más grande para móvil */
+  @media (max-width: ${theme.breakpoints.mobile}) {
+    padding: 1.25rem 2rem;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
@@ -243,11 +288,11 @@ const ScrollToTopButton = styled(motion.button).withConfig({
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('hero');  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [activeSection, setActiveSection] = useState('hero');
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   // ✅ Función para scroll suave considerando altura del navbar
-  const scrollToSection = (href) => {
-    const element = document.querySelector(href);
+  const scrollToSection = (href) => {    const element = document.querySelector(href);
     if (element) {
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.scrollY - NAVBAR_HEIGHT;
@@ -292,15 +337,20 @@ const Navbar = () => {
     const handleResize = () => {
       if (window.innerWidth > 768) {
         setIsMobileMenuOpen(false);
-      }    };
+      }
+    };
     
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    return () => window.removeEventListener('resize', handleResize);  }, []);
+
+  // ✅ Función para cerrar menú
+  const closeMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   const handleNavClick = (e, href) => {
     e.preventDefault();
-    setIsMobileMenuOpen(false);
+    closeMenu();
     scrollToSection(href);
   };
 
@@ -340,8 +390,8 @@ const Navbar = () => {
             href="#hero" 
             onClick={handleLogoClick}
             whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >            <FiCode className="icon" />
+            whileTap={{ scale: 0.95 }}          >
+            <FiCode className="icon" />
             <span>{personalInfo.name.split(' ')[0]}</span>
           </Logo>
 
@@ -381,26 +431,26 @@ const Navbar = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            onClick={() => setIsMobileMenuOpen(false)}
+            onClick={closeMenu}  /* ✅ Cerrar al hacer clic fuera de los enlaces */
           >
-            <MobileMenuButton
+            {/* ✅ Botón de cerrar separado con CloseButton */}
+            <CloseButton
               onClick={(e) => {
-                e.stopPropagation();
-                setIsMobileMenuOpen(false);
+                e.stopPropagation();  /* ✅ Evitar que el clic burbujee al MobileMenu */
+                closeMenu();
               }}
-              style={{ position: 'absolute', top: '2rem', right: '2rem' }}
-              whileHover={{ scale: 1.1, rotate: 90 }}
-              whileTap={{ scale: 0.9 }}              aria-label="Cerrar menú"
+              aria-label="Cerrar menú"              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <FiX />
-            </MobileMenuButton>
+              <FiX size={24} />
+            </CloseButton>
 
             {NAV_ITEMS.map((item, index) => (
               <MobileNavLink
                 key={item.name}
                 href={item.href}
                 onClick={(e) => {
-                  e.stopPropagation();
+                  e.stopPropagation();  /* ✅ Evitar cerrar menú al hacer clic en enlace */
                   handleNavClick(e, item.href);
                 }}
                 custom={index}
@@ -415,7 +465,14 @@ const Navbar = () => {
             ))}
 
             <motion.div 
-              style={{ display: 'flex', gap: '1rem', marginTop: '2rem', width: '100%', justifyContent: 'center' }}
+              style={{ 
+                display: 'flex', 
+                gap: '1rem', 
+                marginTop: '2rem', 
+                width: '100%', 
+                justifyContent: 'center',
+                flexWrap: 'wrap'
+              }}
               variants={linkVariants}
               custom={NAV_ITEMS.length}
               initial="hidden"
@@ -431,15 +488,15 @@ const Navbar = () => {
                 whileHover={{ scale: 1.1 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                GitHub
-              </MobileNavLink>
+                GitHub              </MobileNavLink>
               <MobileNavLink 
                 href={personalInfo.social.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
                 custom={NAV_ITEMS.length + 2}
                 variants={linkVariants}
-                whileHover={{ scale: 1.1 }}                onClick={(e) => e.stopPropagation()}
+                whileHover={{ scale: 1.1 }}
+                onClick={(e) => e.stopPropagation()}
               >
                 LinkedIn
               </MobileNavLink>
